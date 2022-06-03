@@ -2,6 +2,7 @@ package com.example.shroomifyimageclassification
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.icu.text.NumberFormat
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -57,7 +58,8 @@ class MainActivity : AppCompatActivity() {
         var uri: Uri?= data?.data
         bitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, uri)
         val result = classifier.recognizeImage(bitmap)
-        tv.setText(result.get(0).title)
+        tv.setText("Result : "+result.get(0).title+"\nConfidence : "+
+                    NumberFormat.getPercentInstance().format(result.get(0).confidence))
 
     }
 }
