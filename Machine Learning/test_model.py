@@ -16,8 +16,8 @@ interpreter.allocate_tensors()
 input_index = interpreter.get_input_details()[0]["index"]
 output_index = interpreter.get_output_details()[0]["index"]
 
-valid_datasets = get_dataset(valid_edible_fungies, valid_poisonous_fungies, "valid", 1)
-valid_batches = valid_datasets
+test_datasets = get_dataset(test_edible_fungies, test_poisonous_fungies, "test", 1)
+test_batches = test_datasets
 
 # Gather results for the randomly sampled test images
 predictions = []
