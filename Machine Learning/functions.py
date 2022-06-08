@@ -1,5 +1,4 @@
 import os
-from tkinter.tix import IMAGE
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -49,7 +48,7 @@ def preprocess(sdir, trsplit, vsplit):
     print(test_df['labels'].value_counts(),"\n")
     print(valid_df['labels'].value_counts())
     return train_df, test_df, valid_df
-    
+
 def preprocess_image(item):
     image_string = tf.io.read_file(item[0])
     image_decoded = tf.image.decode_jpeg(image_string, channels=3)
