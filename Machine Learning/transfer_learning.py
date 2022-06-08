@@ -6,11 +6,10 @@ from functions import get_dataset
 from import_balancing_dataset import train_edible_fungies, train_poisonous_fungies, valid_edible_fungies, valid_poisonous_fungies, batch_size
 
 
-IMAGE_SIZE = 224
 handle_base = "mobilenet_v2"
 MODULE_HANDLE ="https://tfhub.dev/google/tf2-preview/{}/feature_vector/4".format(handle_base)
 feature_extractor = hub.KerasLayer(MODULE_HANDLE,
-                                    input_shape=(IMAGE_SIZE, IMAGE_SIZE, 3))
+                                    input_shape=(224, 224, 3))
 feature_extractor.trainable = False
 
 tf.keras.backend.clear_session()
@@ -40,3 +39,23 @@ history = model.fit(train_dataset,
 history_frame = pd.DataFrame(history.history)
 history_frame.loc[:, ['loss', 'val_loss','accuracy', 'val_accuracy']].plot()
 
+model.save("shroomify_model.h5")
+
+MUSHROOM_SAVED_MODEL = "mushroom_saved_model"
+
+# Use TensorFlow's SavedModel API to export the SavedModel from the trained Keras model
+tf.saved_model.save(model, MUSHROOM_SAVED_MODEL)
+loaded = tf.saved_model.load(MUSHROOM_SAVED_MODEL)
+print(list(loaded.signatures.keys()))
+infer = loaded.signatures["serving_default"]
+print(infer.structured_input_signature)
+print(infer.structured_outputs)
+
+# Intialize the TFLite converter to load the SavedModel
+converter = tf.lite.TFLiteConverter.from_saved_model(MUSHROOM_SAVED_MODEL)
+
+# Set the optimization strategy for 'size' in the converter 
+converter.optimizations = [tf.lite.Optimize.OPTIMIZE_FOR_SIZE]
+
+# Use the tool to finally convert the model
+tflite_model = converter.convert()

@@ -53,7 +53,7 @@ def preprocess(sdir, trsplit, vsplit):
 def preprocess_image(item):
     image_string = tf.io.read_file(item[0])
     image_decoded = tf.image.decode_jpeg(image_string, channels=3)
-    image_resized = tf.image.resize(image_decoded, (IMAGE_SIZE, IMAGE_SIZE))
+    image_resized = tf.image.resize(image_decoded, (224, 224))
     image_resized = tf.cast(image_resized, tf.float32) / 255.0
     return image_resized, tf.strings.to_number(item[1], tf.int64)
 

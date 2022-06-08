@@ -27,7 +27,7 @@ train_poisonous_mushroom_sporocarp = list(set(poisonous_mushroom_sporocarp['file
 train_edible_fungies = list(set(train_edible_sporocarp + train_edible_mushroom_sporocarp))
 train_poisonous_fungies = list(set(train_poisonous_sporocarp + train_poisonous_mushroom_sporocarp))
 
-print("Train Edible Fungies\t: ", len(train_edible_fungies))
+print("\nTrain Edible Fungies\t: ", len(train_edible_fungies))
 print("Train Poisonous Fungies\t: ", len(train_poisonous_fungies))
 
 label = valid_df.groupby('labels')
@@ -50,4 +50,4 @@ print("Valid Poisonous Fungies\t: ", len(valid_poisonous_fungies))
 
 batch_size = 32
 num_batch_per_epoch = min(len(train_edible_fungies), len(train_poisonous_fungies)) // batch_size
-print("Number batch per epoch: ",num_batch_per_epoch)
+print("\nNumber batch per epoch: ",num_batch_per_epoch)
