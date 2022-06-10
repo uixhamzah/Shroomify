@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1097566659688",
+    "project_id": "molten-muse-352811",
+    "storage_bucket": "molten-muse-352811.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1097566659688:android:820defe4b1212b7fad07dd",
+        "android_client_info": {
+          "package_name": "com.shroomify.capstone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1097566659688-f8vc24e4dd1ffo19gi2l27ttjke2272v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrmEdynCAQhhD-Qn0BXODILNAG6cnGse4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1097566659688-f8vc24e4dd1ffo19gi2l27ttjke2272v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
