@@ -17,8 +17,15 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.component1
+import com.google.firebase.storage.ktx.component2
+import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.ktx.storageMetadata
+import java.io.ByteArrayOutputStream
+import java.io.File
 
 class Test_activity : AppCompatActivity() {
 
@@ -27,6 +34,8 @@ class Test_activity : AppCompatActivity() {
     private val mModelPath = "mushroom_model.tflite"
     private val mLabelPath = "labels.txt"
     private lateinit var classifier: Classifier
+    // Get a non-default Storage bucket
+    private val storage = Firebase.storage("gs://molten-muse-352811.appspot.com")
     companion object {
         private const val CAMERA_PERMISSON_CODE = 1
         private const val CAMERA_REQUEST_CODE = 2
@@ -69,27 +78,59 @@ class Test_activity : AppCompatActivity() {
 
         generateButton.setOnClickListener {
             var tv: TextView = findViewById(R.id.textView2)
-            val bitmap = ((imgview2 as ImageView).drawable as BitmapDrawable).bitmap
+            val bitmap = (imgview2.drawable as BitmapDrawable).bitmap
             val result = classifier.recognizeImage(bitmap)
             val result1 = result.get(0).title
             val result2 = result.get(0).confidence
             tv.setText("Result : "+result1+"\nConfidence : "+
                     NumberFormat.getPercentInstance().format(result2))
 
+            val storageRef = storage.reference
+            // Get the data from an ImageView as bytes
+            imgview2.isDrawingCacheEnabled = true
+            imgview2.buildDrawingCache()
+            val baos = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val data = baos.toByteArray()
+            // Create the file metadata
+            val metadata = storageMetadata {
+                contentType = "image/jpeg"
+            }
+            val file = Uri.fromFile(File("path/to/"+ editText1.text.toString() +".jpg"))
+            val mountainsRef = storageRef.child("images/${file.lastPathSegment}")
+            var uploadTask = mountainsRef.putBytes(data, metadata)
+
+        // Listen for state changes, errors, and completion of the upload.
+        // You'll need to import com.google.firebase.storage.ktx.component1 and
+        // com.google.firebase.storage.ktx.component2
+            uploadTask.addOnProgressListener { (bytesTransferred, totalByteCount) ->
+                val progress = (100.0 * bytesTransferred) / totalByteCount
+                Log.d(TAG, "Upload is $progress% done")
+            }.addOnPausedListener {
+                Log.d(TAG, "Upload is paused")
+            }.addOnFailureListener {
+                // Handle unsuccessful uploads
+            }.addOnSuccessListener {
+                // Handle successful uploads on complete
+                // ...
+            }
+
             // Access a Cloud Firestore instance from your Activity
             val db = Firebase.firestore
 
             // Create a new user with a first, middle, and last name
-            val user = hashMapOf(
+            val create = hashMapOf(
                 "name" to editText1.text.toString(),
                 "description" to editText2.text.toString(),
                 "result" to result1,
-                "confidence" to result2
+                "confidence" to result2,
+                "file path" to mountainsRef.toString(),
+                "timestamp" to FieldValue.serverTimestamp()
             )
 
             // Add a new document with a generated ID
             db.collection("mushrooms")
-                .add(user)
+                .add(create)
                 .addOnSuccessListener { documentReference ->
                     Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
                 }
@@ -97,21 +138,7 @@ class Test_activity : AppCompatActivity() {
                     Log.w(TAG, "Error adding document", e)
                 }
 
-            db.collection("mushrooms")
-                .get()
-                .addOnSuccessListener { result ->
-                    for (document in result) {
-                        Log.d(TAG, "${document.id} => ${document.data}")
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    Log.w(TAG, "Error getting documents.", exception)
-                }
-
         }
-
-
-
 
     }
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResult: IntArray){
