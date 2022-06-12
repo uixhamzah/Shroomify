@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +32,12 @@ class MainActivity : AppCompatActivity() {
 
         var camera: Button = findViewById(R.id.cameraButton)
         var select: Button = findViewById(R.id.selectButton)
+        var search: ImageButton = findViewById(R.id.imageButton)
+
+        search.setOnClickListener(View.OnClickListener {
+            val inten = Intent(this, view_data::class.java)
+            startActivity(inten)
+        })
 
         camera.setOnClickListener(View.OnClickListener{
             val inten = Intent(this, Test_activity::class.java)
