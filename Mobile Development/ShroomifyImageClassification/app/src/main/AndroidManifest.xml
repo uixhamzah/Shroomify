@@ -3,7 +3,7 @@
     package="com.shroomify.capstone">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -17,10 +17,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ShroomifyImageClassification">
         <activity
-            android:name="com.shroomify.capstone.Test_activity"
+            android:name=".view_field"
             android:exported="false" />
         <activity
-            android:name="com.shroomify.capstone.MainActivity"
+            android:name=".view_data"
+            android:exported="false" />
+        <activity
+            android:name=".Test_activity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
