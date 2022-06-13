@@ -85,6 +85,9 @@ class Test_activity : AppCompatActivity() {
             tv.setText("Result : "+result1+"\nConfidence : "+
                     NumberFormat.getPercentInstance().format(result2))
 
+            var mushroom_name = editText1.text.toString()
+            val mushroom_file = mushroom_name.replace("\\s".toRegex(), "-")
+            var mushroom_desc = editText2.text.toString()
             val storageRef = storage.reference
             // Get the data from an ImageView as bytes
             imgview2.isDrawingCacheEnabled = true
@@ -96,7 +99,7 @@ class Test_activity : AppCompatActivity() {
             val metadata = storageMetadata {
                 contentType = "image/jpeg"
             }
-            val file = Uri.fromFile(File("path/to/"+ editText1.text.toString() +".jpg"))
+            val file = Uri.fromFile(File("path/to/"+ mushroom_file +".jpg"))
             val mountainsRef = storageRef.child("images/${file.lastPathSegment}")
             var uploadTask = mountainsRef.putBytes(data, metadata)
 
@@ -120,8 +123,8 @@ class Test_activity : AppCompatActivity() {
 
             // Create a new user with a first, middle, and last name
             val create = hashMapOf(
-                "name" to editText1.text.toString(),
-                "description" to editText2.text.toString(),
+                "name" to mushroom_name,
+                "description" to mushroom_desc,
                 "result" to result1,
                 "confidence" to result2,
                 "file path" to mountainsRef.toString(),
